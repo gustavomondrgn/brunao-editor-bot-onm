@@ -1,7 +1,19 @@
+# Segredos
 .env
+.env.local
+
+# Estado do bot — mora no volume, nunca no Git
+data/
 seen_ids.json
+publicadas.json
+skipped_jobs.jsonl
+bot.log
+
+# Python
 __pycache__/
 *.pyc
 .venv/
-bot.log
-ONM-BOT-NOTIFIER-CONTEXT.md
+
+# Documentação de trabalho: contexto interno e material herdado do bot original
+# (o ONM-BOT-NOTIFIER-CONTEXT.md tem credenciais do outro bot dentro).
+docs/interno/

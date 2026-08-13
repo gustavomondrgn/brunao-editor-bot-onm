@@ -1,103 +1,141 @@
-# ONM Jobs Bot
+# Bot de vagas de edição de vídeo — Bruno
 
-Script Python que monitora novos jobs publicados na plataforma **O Mercado de Trabalho** (do O Novo Mercado) e envia notificações em tempo real para um grupo no Telegram.
+Monitora a plataforma **O Mercado de Trabalho** (do O Novo Mercado) e manda no
+grupo do Telegram só as vagas de **edição e produção de vídeo** que dá para
+responder **fora da plataforma** — com WhatsApp, formulário, link ou e-mail no
+próprio anúncio.
 
-A plataforma não possui sistema de notificações nativo — este bot resolve isso consultando a API interna a cada N minutos e enviando mensagens formatadas via Telegram Bot API.
+Quando uma vaga já publicada sai do ar, o bot volta na mensagem do grupo e a
+risca, com **🔴 VAGA ENCERRADA** por cima.
 
-## Como funciona
+```text
+🏢 VAGA
 
-1. Faz login na API do ONM e guarda o JWT em memória
-2. A cada `CHECK_INTERVAL` segundos consulta os jobs mais recentes
-3. Compara os IDs retornados com `seen_ids.json` (persistido em disco)
-4. Para cada job novo, **classifica via Gemini Flash 2.5** usando o perfil em [`profile.md`](profile.md)
-5. Roteia o job conforme a categoria:
-   - **`relevant`** → notifica no Telegram (mensagem normal)
-   - **`borderline`** → notifica no Telegram com tag 🤔 e o motivo
-   - **`irrelevant`** → não notifica, anexa em `skipped_jobs.jsonl` pra revisão
-6. Re-autentica automaticamente se receber 401
+📌 VAGA EDITOR - 3 REELS POR DIA
 
-Na **primeira execução** apenas salva os IDs existentes (sem notificar) para evitar flood.
+👤 Fulano de Tal
+🏷 Editor de vídeo · Design e Multimídia
+🔧 Reels, TikTok, CapCut
+🌎 Remoto
+💰 R$1.500 – R$2.500
+📅 2026-08-13 14:02
 
-### Filtro inteligente
+Preciso de editor para 3 reels por dia, cortes dinâmicos...
 
-O filtro foi desenhado com viés de **falso positivo** (mandar a mais) em vez de
-**falso negativo** (perder job). Se o classificador tem qualquer dúvida, a
-categoria é `borderline` e a notificação chega marcada. Se o Gemini estiver
-indisponível ou o `GEMINI_API_KEY` não estiver configurado, o bot **notifica
-tudo** (fallback seguro) — você nunca perde job por falha do filtro.
+📲 WhatsApp: (81) 98262-6569
 
-Pra ajustar o que entra/sai, edite [`profile.md`](profile.md):
-
-- **Rodando local com `python main.py`:** o arquivo é relido a cada checagem
-  (cache invalidado por `mtime`), então **não precisa restart**.
-- **Em produção via Docker/Coolify:** edite, commite e pushe — o redeploy
-  pega a nova versão (o `profile.md` é embutido na imagem via `COPY`).
-
-Pra revisar o que foi descartado:
-
-```bash
-# Local
-tail -f skipped_jobs.jsonl
-
-# Docker
-docker exec onm-jobs-bot tail -f /app/data/skipped_jobs.jsonl
+🔗 Ver no ONM
 ```
 
-## Uso local
+## As três regras do filtro
+
+1. **É demanda de vídeo?** Edição, motion, cortes, VSL, legendagem,
+   pós-produção, vídeo com IA. Quem decide é o Gemini lendo
+   [bot/config/profile.md](bot/config/profile.md).
+2. **Dá para trabalhar à distância?** Vaga que exige presença física —
+   escritório, estúdio, cobrir evento, morar em determinada cidade — não entra.
+   Anúncio que não fala de local nenhum entra: a maioria é assim, e presencial
+   só se o texto exigir.
+3. **Tem contato direto?** Precisa haver WhatsApp, telefone, link de
+   candidatura ou e-mail no anúncio. Vaga que só aceita proposta pela
+   plataforma fica de fora — é a regra que faz o grupo valer a pena.
+
+Na dúvida, o bot notifica: vaga marcada como "talvez" chega com 🤔 e uma linha
+explicando a dúvida. Sem `GEMINI_API_KEY` ou sem o `profile.md`, o filtro se
+desliga e o bot notifica tudo — nunca fica em silêncio por falha de infra.
+
+> **Ordem de grandeza:** a exigência de contato direto é cara. Numa amostra de
+> 20 vagas do ONM, 6 tinham contato fora da plataforma e 3 eram de vídeo. O
+> grupo recebe pouca coisa por dia, e é assim de propósito. Para afrouxar,
+> mexa em `EXIGIR_CONTATO` e `CONTATOS_ACEITOS`.
+
+## Estrutura
+
+```text
+.
+├── docker-compose.yml       # o que o Coolify sobe
+├── bot/
+│   ├── Dockerfile
+│   ├── main.py              # loop, decisão sobre cada vaga, revisor
+│   ├── config.py            # variáveis de ambiente e caminhos
+│   ├── onm.py               # login, listagem e "esta vaga ainda existe?"
+│   ├── classificador.py     # Gemini: é vídeo? é remoto? tem contato?
+│   ├── contatos.py          # extração de WhatsApp, link, e-mail, @
+│   ├── mensagem.py          # o HTML que aparece no grupo
+│   ├── telegram.py          # enviar, reescrever, apagar
+│   ├── estado.py            # seen_ids, publicadas, descartes
+│   ├── config/profile.md    # ← o filtro mora aqui
+│   └── tests/               # testes da extração de contato
+├── scripts/testar_filtro.py # roda o filtro sem enviar nada
+└── data/                    # estado local (no container é volume)
+```
+
+## Rodar local
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate          # Linux/Mac
-# .venv\Scripts\activate           # Windows
-
-pip install -r requirements.txt
-
-cp .env.example .env
-# editar .env com as credenciais
-
-python main.py
+.venv\Scripts\activate          # Windows
+pip install -r bot/requirements.txt
+cp .env.example .env            # e preencha
+python bot/main.py
 ```
 
-Para testar imediatamente, defina `CHECK_INTERVAL=30` no `.env`.
+Na primeira execução o bot só memoriza as vagas existentes e não notifica nada
+— senão o grupo nasceria com 20 mensagens de vagas velhas. A partir do segundo
+ciclo, notifica o que for novo.
+
+Para testar sem esperar e sem enviar nada:
+
+```bash
+python scripts/testar_filtro.py --limite 20          # o que entraria e o que não
+python scripts/testar_filtro.py --previa             # + a mensagem pronta
+python scripts/testar_filtro.py --enviar 1           # publica 1 no grupo, de verdade
+python bot/main.py --uma-vez                         # um ciclo só
+python bot/tests/test_contatos.py                    # testes da extração
+```
+
+## Ajustar o filtro
+
+Tudo que decide o que entra está em [bot/config/profile.md](bot/config/profile.md),
+em português corrido. Adicione um tipo de trabalho na lista de relevantes ou de
+irrelevantes e pronto.
+
+- **Local:** salve o arquivo. O bot relê sozinho na checagem seguinte.
+- **Produção:** edite, commite e pushe — o Coolify rebuilda e sobe.
+
+Depois de mexer, rode `python scripts/testar_filtro.py` para ver o efeito nas
+vagas que estão no ar agora.
 
 ## Variáveis de ambiente
 
-| Variável           | Descrição                                                  | Default            |
-| ------------------ | ---------------------------------------------------------- | ------------------ |
-| `ONM_EMAIL`        | E-mail da conta ONM                                        | —                  |
-| `ONM_PASSWORD`     | Senha da conta ONM                                         | —                  |
-| `TELEGRAM_TOKEN`   | Token do bot do Telegram                                   | —                  |
-| `TELEGRAM_CHAT_ID` | ID do grupo/chat de destino                                | —                  |
-| `CHECK_INTERVAL`   | Intervalo entre checagens (segundos)                       | `600`              |
-| `DATA_DIR`         | Onde `seen_ids.json` e `skipped_jobs.jsonl` ficam          | `.`                |
-| `GEMINI_API_KEY`   | API key do Gemini — se vazio, filtro desativado            | —                  |
-| `GEMINI_MODEL`     | Modelo do Gemini a usar                                    | `gemini-2.5-flash` |
-| `PROFILE_FILE`     | Caminho do `profile.md`                                    | `profile.md`       |
+| Variável | Padrão | Para que serve |
+| --- | --- | --- |
+| `ONM_EMAIL` / `ONM_PASSWORD` | — | conta do Mercado de Trabalho usada pelo bot |
+| `TELEGRAM_TOKEN` / `TELEGRAM_CHAT_ID` | — | bot e grupo de destino |
+| `GEMINI_API_KEY` | — | sem ela o filtro desliga e o bot notifica tudo |
+| `GEMINI_MODEL` | `gemini-3.1-flash-lite` | modelo do classificador |
+| `CHECK_INTERVAL` | `600` | segundos entre checagens |
+| `PAGE_LIMIT` | `20` | quantas vagas buscar por ciclo |
+| `EXIGIR_CONTATO` | `true` | exigir contato fora da plataforma |
+| `CONTATOS_ACEITOS` | `whatsapp,telefone,link,email` | o que conta como contato |
+| `NOTIFICAR_TALVEZ` | `true` | mandar também as vagas duvidosas, com 🤔 |
+| `ACAO_VAGA_ENCERRADA` | `marcar` | `marcar` risca, `apagar` remove, `nada` desliga |
+| `RECHECK_HORAS` | `6` | de quanto em quanto tempo cada vaga é rechecada |
+| `RECHECK_POR_CICLO` | `12` | quantas rechecagens por ciclo |
+| `RECHECK_DIAS` | `30` | por quanto tempo uma vaga é acompanhada |
+| `DESCRIPTION_MAX_CHARS` | `700` | tamanho do escopo na mensagem |
+| `LOG_LEVEL` | `INFO` | |
 
-> Para gerar `GEMINI_API_KEY`: <https://aistudio.google.com/apikey> → "Create API key".
-> Free tier do `gemini-2.5-flash` é generoso (centenas de req/dia, suficiente
-> pra esse volume de jobs).
+`DATA_DIR` já vem fixo no `docker-compose.yml` apontando para o volume.
+**Não cadastre no painel do Coolify** — apontar para fora do volume faz o bot
+esquecer tudo a cada redeploy e reenviar todas as vagas para o grupo.
 
-## Deploy via Docker
+## Deploy
+
+Está no ar no Coolify. Como funciona, como refazer e o que sobrevive a um
+redeploy: [docs/DEPLOY.md](docs/DEPLOY.md). Detalhes de arquitetura e das
+decisões: [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build   # se quiser subir na mão
 ```
-
-O `seen_ids.json` é persistido no volume `bot-data`, sobrevivendo a restarts.
-
-## Deploy via Coolify (Hetzner)
-
-1. Push do código para um repositório privado no GitHub
-2. No Coolify: New Resource → Docker Compose → conectar ao repo
-3. Adicionar as variáveis de ambiente
-4. Deploy
-
-## Stack
-
-- Python 3.12
-- `requests` + `python-dotenv`
-- `google-genai` (Gemini Flash 2.5 para classificação dos jobs)
-- Docker / docker-compose
-
-Sem frameworks de agentes, sem banco de dados — apenas um script enxuto que faz uma coisa bem feita.

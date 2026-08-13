@@ -1,16 +1,47 @@
 services:
-  onm-jobs-bot:
-    build: .
-    container_name: onm-jobs-bot
+  brunao-editor-bot:
+    build:
+      # Contexto na raiz: o Dockerfile mora em bot/, mas copia bot/*.py e
+      # bot/config/ — precisa enxergar a pasta inteira.
+      context: .
+      dockerfile: bot/Dockerfile
+    container_name: brunao-editor-bot
     restart: unless-stopped
-    env_file:
-      - .env
+    # NÃO usar `env_file: .env` — o .env está no .gitignore, então não existe no
+    # repositório que o Coolify clona, e o compose quebraria antes de subir.
+    # Com substituição de variáveis funciona nos dois casos: local o compose lê
+    # o .env da pasta sozinho, e em produção o Coolify injeta as variáveis.
+    environment:
+      - ONM_EMAIL=${ONM_EMAIL}
+      - ONM_PASSWORD=${ONM_PASSWORD}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-flash-lite}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-600}
+      - PAGE_LIMIT=${PAGE_LIMIT:-20}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      # Só entra vaga com contato fora da plataforma. Tire `email` da lista
+      # para deixar apenas WhatsApp e link.
+      - EXIGIR_CONTATO=${EXIGIR_CONTATO:-true}
+      - CONTATOS_ACEITOS=${CONTATOS_ACEITOS:-whatsapp,telefone,link,email}
+      - NOTIFICAR_TALVEZ=${NOTIFICAR_TALVEZ:-true}
+      # Vaga que sai do ar: "marcar" risca a mensagem e põe VAGA ENCERRADA por
+      # cima, "apagar" some com ela, "nada" desliga o revisor.
+      - ACAO_VAGA_ENCERRADA=${ACAO_VAGA_ENCERRADA:-marcar}
+      - RECHECK_HORAS=${RECHECK_HORAS:-6}
+      - RECHECK_POR_CICLO=${RECHECK_POR_CICLO:-12}
+      - RECHECK_DIAS=${RECHECK_DIAS:-30}
+      - DESCRIPTION_MAX_CHARS=${DESCRIPTION_MAX_CHARS:-700}
+      # Fixo no volume. Não cadastre DATA_DIR no painel do Coolify: apontar para
+      # fora daqui faz o bot esquecer tudo a cada redeploy e reenviar o mundo.
+      - DATA_DIR=/app/data
     volumes:
       - bot-data:/app/data
-      # profile.md vai pela imagem (COPY no Dockerfile). Pra editar em produção:
-      # commit + push → Coolify rebuilda. Pra editar local rapidão, rode
-      # `python main.py` direto (sem Docker) — o mtime cache pega a edição
-      # na próxima checagem.
+      # O profile.md vai dentro da imagem (COPY no Dockerfile). Para mudar o
+      # filtro em produção: edita, commita, pusha → o Coolify rebuilda. Local,
+      # rode `python bot/main.py` direto: o cache por mtime pega a edição na
+      # checagem seguinte.
 
 volumes:
   bot-data:
