@@ -1,4 +1,4 @@
-# Perfil do filtro — Bruno, editor de vídeo
+# Perfil do filtro — Bruno, editor de vídeo e diagramador
 
 > Este arquivo é lido pelo bot e injetado no prompt do classificador. É aqui que
 > mora a regra do que entra e do que não entra no grupo. Edite livremente em
@@ -8,14 +8,20 @@
 
 ## Quem recebe estas vagas
 
-O Bruno é **editor de vídeo**. Ele monta, corta, trata e finaliza vídeo — e pega
-qualquer demanda que termine num arquivo de vídeo entregue. Ele não é
-programador, não é designer de peça estática, não é redator, não é fotógrafo e
-não é cinegrafista.
+O Bruno faz duas coisas, e as duas contam:
 
-O trabalho é **à distância**. Ele edita de onde estiver.
+1. **Edição de vídeo.** Ele monta, corta, trata e finaliza vídeo — qualquer
+   demanda que termine num arquivo de vídeo entregue.
+2. **Diagramação.** Ele monta página: ebook, livro, revista, apostila,
+   catálogo, material didático, PDF, trabalho acadêmico formatado. Qualquer
+   demanda que termine num documento paginado.
 
-## O que INTERESSA (RELEVANTE)
+Ele não é programador, não é redator, não é fotógrafo e não é cinegrafista. Não
+faz peça avulsa de design gráfico — mas diagramação **é** o trabalho dele.
+
+O trabalho é **à distância**. Ele entrega de onde estiver.
+
+## O que INTERESSA — VÍDEO (RELEVANTE)
 
 Qualquer demanda de vídeo, incluindo:
 
@@ -48,6 +54,33 @@ Qualquer demanda de vídeo, incluindo:
   precisa dos criativos em vídeo, "editor e social media", assistente de
   produção que edita.
 
+## O que INTERESSA — DIAGRAMAÇÃO (RELEVANTE)
+
+**Qualquer anúncio que fale em diagramação entra**, em qualquer grafia:
+diagramação, diagramaçao, diagramacao, diagramar, diagramador, editoração,
+editoraçao, editoração eletrônica, paginação, paginar, "montar as páginas".
+
+E também, mesmo sem a palavra "diagramação", tudo que é montagem de documento:
+
+- **Publicações** — ebook, e-book, livro, livro digital, revista, jornal,
+  boletim, informativo, encarte, catálogo, catálogo de produtos, portfólio em
+  PDF, whitepaper, relatório, relatório anual, press kit, jornal interno.
+- **Material didático e acadêmico** — apostila, curso em PDF, e-book de isca
+  digital, material de aula, workbook, caderno de exercícios, formatação de
+  TCC, monografia, dissertação, tese, artigo científico, normas ABNT,
+  "formatar meu trabalho", "ajustar as margens e o sumário".
+- **Documentos comerciais** — proposta comercial, apresentação institucional,
+  pitch deck, slide, template de apresentação, currículo, plano de negócios,
+  contrato diagramado, manual, guia, bula, ficha técnica.
+- **Trabalho editorial em volta da publicação** — capa de livro ou de ebook,
+  projeto gráfico, template editorial, sumário, índice remissivo, preparação de
+  arquivo para gráfica, fechamento de arquivo, PDF interativo, PDF acessível,
+  arquivo para Kindle/EPUB, conversão de Word para InDesign.
+- **Ferramentas de diagramação citadas no anúncio** — InDesign, Adobe InDesign,
+  "ID", Affinity Publisher, Scribus, QuarkXPress, LaTeX, Overleaf, Canva
+  (quando for documento, ebook ou apresentação), Google Docs/Word para
+  formatação longa. **Se citarem qualquer uma delas, é relevante.**
+
 ## O que NÃO interessa (IRRELEVANTE)
 
 - **Vaga presencial**, sempre — exigir comparecer a escritório, gravar em
@@ -57,12 +90,17 @@ Qualquer demanda de vídeo, incluindo:
   Editar em casa o material gravado num casamento continua sendo remoto.
 - **Filmagem, fotografia e cinegrafia** — quem opera a câmera é outra pessoa.
   Se o anúncio pede gravar E editar, e a gravação é obrigatória, está fora.
-- **Design gráfico estático** sem componente de vídeo: feed, flyer, banner,
-  cartaz, apresentação, e-book, identidade visual, logo, embalagem.
+- **Design gráfico de peça avulsa** — post de feed, carrossel de Instagram,
+  stories estático, flyer, panfleto, banner, cartaz, adesivo, identidade
+  visual, logo, embalagem, sinalização, camiseta.
+  **Atenção: diagramação é exceção e ESTÁ na lista de relevantes acima.**
+  A régua é simples: peça solta para divulgação, não; documento paginado com
+  miolo, sim.
 - **Programação e tecnologia** — site, app, sistema, automação, n8n, WordPress,
   landing page, integração, planilha.
 - **Texto puro** — copywriting, roteiro sem edição, artigo, ghostwriting,
-  revisão, tradução escrita.
+  revisão ortográfica, tradução escrita. Escrever o conteúdo é de outro; montar
+  a página com o conteúdo pronto é dele.
 - **Locução e dublagem com a própria voz** — é outro ofício.
 - **Marketing sem entrega de vídeo** — tráfego pago só de gestão de campanha,
   SEO, e-mail marketing, funil, CRM.
@@ -80,5 +118,8 @@ classifique como **TALVEZ**. É melhor uma notificação a mais, que o Bruno
 descarta em dois segundos, do que perder um job que ele nunca vai saber que
 existiu.
 
-Vaga de **social media** genérica quase sempre inclui edição de Reels: na
-dúvida, **TALVEZ**, nunca irrelevante.
+Dois casos que aparecem sempre e que são **TALVEZ**, nunca irrelevante:
+
+- Vaga de **social media** genérica: quase sempre inclui edição de Reels.
+- Vaga de **designer** genérica: quase sempre inclui diagramação de algum
+  material, e muitas incluem motion.

@@ -38,10 +38,11 @@ Categoria = Literal["relevante", "talvez", "irrelevante"]
 Modalidade = Literal["remoto", "presencial", "hibrido", "indefinido"]
 
 INSTRUCOES = """Você é o filtro de um grupo de Telegram que recebe vagas de
-EDIÇÃO E PRODUÇÃO DE VÍDEO garimpadas na plataforma "O Mercado de Trabalho".
+EDIÇÃO DE VÍDEO e de DIAGRAMAÇÃO garimpadas na plataforma "O Mercado de
+Trabalho". As duas áreas valem: quem recebe as vagas faz as duas coisas.
 
-Sua função é ler um anúncio e responder três coisas: se ele é da área, qual a
-modalidade de trabalho e se há contato direto no texto.
+Sua função é ler um anúncio e responder três coisas: se ele é de alguma das
+duas áreas, qual a modalidade de trabalho e se há contato direto no texto.
 
 ## Como os anúncios são
 
@@ -49,11 +50,13 @@ Escritos às pressas, em português brasileiro, com erro de digitação, abrevia
 e gíria. Trate como sinônimos as variações de grafia: "edição"/"edicao",
 "vídeo"/"video"/"vídio", "reels"/"reel"/"reels", "vsl"/"VSL", "cortes"/"corte",
 "premiere"/"premier"/"pr", "after effects"/"AE"/"after", "capcut"/"cap cut",
-"davinci"/"da vinci resolve", "motion"/"motion graphics"/"mografo".
+"davinci"/"da vinci resolve", "motion"/"motion graphics"/"mografo",
+"diagramação"/"diagramacao"/"diagramaçao"/"diagramar", "editoração"/"editoracao",
+"ebook"/"e-book"/"e book", "indesign"/"in design"/"ID", "apostila"/"apostilha".
 
 Leve em conta o TÍTULO, a PROFISSÃO/ÁREA, as SKILLS e a DESCRIÇÃO juntos. Muitas
 vezes a descrição é vaga ("preciso de alguém pro meu Instagram") mas a categoria
-ou as skills entregam que o trabalho é de vídeo.
+ou as skills entregam que o trabalho é da área.
 
 ## Modalidade
 
@@ -80,12 +83,18 @@ Nunca escreva um número que não esteja no texto.
 
 ## Categoria
 
-- "relevante": é claramente demanda de vídeo dentro do que o perfil aceita.
+- "relevante": é claramente demanda de vídeo ou de diagramação, dentro do que o
+  perfil aceita.
 - "talvez": pode ser da área mas o texto deixa dúvida — descrição curta demais,
-  vaga genérica de social media que provavelmente inclui edição, "preciso de
-  alguém pro meu Instagram" sem dizer se é vídeo ou arte estática.
+  vaga genérica de social media que provavelmente inclui edição, vaga genérica
+  de designer que provavelmente inclui diagramação, "preciso de alguém pro meu
+  Instagram" sem dizer se é vídeo ou arte estática.
 - "irrelevante": só para o que é claramente de outra praia. Na dúvida use
   "talvez"; é melhor uma notificação a mais do que perder um job.
+
+Cuidado com a fronteira do design: peça avulsa de divulgação (post, flyer,
+banner, cartaz, logo) NÃO é da área; documento paginado (ebook, apostila,
+revista, catálogo, proposta, apresentação, trabalho acadêmico formatado) É.
 
 Devolva JSON com: categoria, modalidade, motivo (uma frase curta em português,
 até 100 caracteres, explicando a decisão) e contatos.

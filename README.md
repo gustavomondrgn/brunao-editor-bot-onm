@@ -1,9 +1,9 @@
-# Bot de vagas de edição de vídeo — Bruno
+# Bot de vagas do Bruno — edição de vídeo e diagramação
 
 Monitora a plataforma **O Mercado de Trabalho** (do O Novo Mercado) e manda no
-grupo do Telegram só as vagas de **edição e produção de vídeo** que dá para
-responder **fora da plataforma** — com WhatsApp, formulário, link ou e-mail no
-próprio anúncio.
+grupo do Telegram só as vagas de **edição de vídeo** e de **diagramação** que
+dá para responder **fora da plataforma** — com WhatsApp, formulário, link ou
+e-mail no próprio anúncio.
 
 Quando uma vaga já publicada sai do ar, o bot volta na mensagem do grupo e a
 risca, com **🔴 VAGA ENCERRADA** por cima.
@@ -29,8 +29,11 @@ Preciso de editor para 3 reels por dia, cortes dinâmicos...
 
 ## As três regras do filtro
 
-1. **É demanda de vídeo?** Edição, motion, cortes, VSL, legendagem,
-   pós-produção, vídeo com IA. Quem decide é o Gemini lendo
+1. **É da área?** Duas áreas contam. **Vídeo:** edição, motion, cortes, VSL,
+   legendagem, pós-produção, vídeo com IA. **Diagramação:** ebook, livro,
+   revista, apostila, catálogo, proposta, apresentação, trabalho acadêmico
+   formatado, InDesign. A régua no design é peça avulsa de divulgação (post,
+   flyer, logo) não, documento paginado sim. Quem decide é o Gemini lendo
    [bot/config/profile.md](bot/config/profile.md).
 2. **Dá para trabalhar à distância?** Vaga que exige presença física —
    escritório, estúdio, cobrir evento, morar em determinada cidade — não entra.
@@ -45,9 +48,11 @@ explicando a dúvida. Sem `GEMINI_API_KEY` ou sem o `profile.md`, o filtro se
 desliga e o bot notifica tudo — nunca fica em silêncio por falha de infra.
 
 > **Ordem de grandeza:** a exigência de contato direto é cara. Numa amostra de
-> 20 vagas do ONM, 6 tinham contato fora da plataforma e 3 eram de vídeo. O
-> grupo recebe pouca coisa por dia, e é assim de propósito. Para afrouxar,
-> mexa em `EXIGIR_CONTATO` e `CONTATOS_ACEITOS`.
+> 25 vagas do ONM, 5 passaram nas três regras — e o que mais corta não é a
+> área, é o contato: várias vagas de vídeo legítimas caem porque o anúncio só
+> aceita proposta pela plataforma. O grupo recebe pouca coisa por dia, e é
+> assim de propósito. Para afrouxar, mexa em `EXIGIR_CONTATO` e
+> `CONTATOS_ACEITOS`.
 
 ## Estrutura
 
