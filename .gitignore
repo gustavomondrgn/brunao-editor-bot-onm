@@ -1,6 +1,8 @@
 # Segredos
 .env
 .env.local
+# Coolify: URL + token de API + uuids da aplicação
+.coolify-config.json
 
 # Estado do bot — mora no volume, nunca no Git
 data/
