@@ -93,5 +93,5 @@ RECHECK_DIAS = int(os.getenv("RECHECK_DIAS", "30"))       # depois disso, esquec
 
 # --- Mensagem --------------------------------------------------------------
 
-DESCRIPTION_MAX_CHARS = int(os.getenv("DESCRIPTION_MAX_CHARS", "700"))
+DESCRIPTION_MAX_CHARS = int(os.getenv("DESCRIPTION_MAX_CHARS", "2000"))
 TELEGRAM_RATE_LIMIT_SECONDS = 1.0
